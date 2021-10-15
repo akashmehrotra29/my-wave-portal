@@ -18,11 +18,23 @@ contract WavePortal {
 
     Wave[] waves;
 
+    // This is an address => uint mapping, meaning I can associate an address with a number!
+    mapping(address => uint256) public lastWavedAt;
+    
     constructor() payable {
         console.log("Yehhh, it's a smart contract constructor");
     }
 
     function wave(string memory _message) public {
+        // make sure the current timestamp is at least 15-minutes bigger than the last timestamp we stored
+        require(
+            lastWavedAt[msg.sender] + 15 minutes < block.timestamp,
+            "Wait 15m"
+        );
+
+        // Update the current timestamp we have for the user
+        lastWavedAt[msg.sender] = block.timestamp;
+
         totalWaves += 1;
         console.log("%s has waved!", msg.sender);
 
